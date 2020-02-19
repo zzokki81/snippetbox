@@ -13,7 +13,10 @@ type Form struct {
 }
 
 func New(data url.Values) *Form {
-	return &Form{data, errors(map[string][]string{})}
+	return &Form{
+		data,
+		errors(map[string][]string{}),
+	}
 }
 
 func (f *Form) Required(fields ...string) {
@@ -25,7 +28,7 @@ func (f *Form) Required(fields ...string) {
 	}
 }
 
-func (f *Form) MaxLenght(field string, d int) {
+func (f *Form) MaxLength(field string, d int) {
 	value := f.Get(field)
 	if value == "" {
 		return
