@@ -5,15 +5,16 @@ import (
 	"path/filepath"
 	"time"
 
+	"alexedwards.net/snippetbox/pkg/forms"
 	"alexedwards.net/snippetbox/pkg/models"
 )
 
 type templateData struct {
 	CurrentYear int
+	Flash       string
+	Form        *forms.Form
 	Snippet     *models.Snippet
 	Snippets    []*models.Snippet
-
-	FormErrors map[string]string
 }
 
 func humanDate(t time.Time) string {
