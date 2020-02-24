@@ -106,15 +106,16 @@ func (app *application) signupUser(w http.ResponseWriter, r *http.Request) {
 	err = app.users.Insert(form.Get("name"), form.Get("email"), form.Get("password"))
 	if err != nil {
 		if errors.Is(err, models.ErrDuplicateEmail) {
-			form.Errors.Add("email", "Adress is already in use")
-			app.render(w, r, "signup.page,tmpl", &templateData{Form: form})
+			form.Errors.Add("email", "Address is already in use")
+			app.render(w, r, "signup.page.tmpl", &templateData{Form: form})
 		} else {
 			app.serverError(w, err)
 		}
 		return
-
 	}
-	app.session.Put(r, "flash", "Your signup was successful. Please login.")
+
+	app.session.Put(r, "flash", "Your signup was successful. Please log in.")
+
 	http.Redirect(w, r, "/user/login", http.StatusSeeOther)
 }
 
@@ -130,6 +131,7 @@ func (app *application) loginUser(w http.ResponseWriter, r *http.Request) {
 		app.clientError(w, http.StatusBadRequest)
 		return
 	}
+
 	form := forms.New(r.PostForm)
 	id, err := app.users.Authenticate(form.Get("email"), form.Get("password"))
 	if err != nil {
@@ -142,12 +144,14 @@ func (app *application) loginUser(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	app.session.Put(r, "authenticateUserId", id)
+	app.session.Put(r, "authenticatedUserID", id)
+
 	http.Redirect(w, r, "/snippet/create", http.StatusSeeOther)
 }
 
 func (app *application) logoutUser(w http.ResponseWriter, r *http.Request) {
 	app.session.Remove(r, "authenticatedUserID")
-	app.session.Put(r, "flash", "You've been logged out successfulu!")
+	app.session.Put(r, "flash", "You've been logged out successfully!")
+
 	http.Redirect(w, r, "/", 303)
 }
